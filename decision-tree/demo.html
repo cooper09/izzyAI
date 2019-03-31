@@ -60,10 +60,7 @@
             <label for="ecpm">Normal Nucleoli:</label>
             <input type="text"  id="text8" name="nucleoli" class="item-input" size="5"/>
             <br/>
-            <label for="ecpm">ormal Nucleoli:</label>
-            <input type="text"  id="text9" name="normal_nuclieoli" class="item-input" size="5"/>
-            <br/>
-            <label for="ecpm">Mitoses:</label>
+            <label for="ecpm">Mitosis:</label>
             <input type="text"  id="text10" name="mitosis" class="item-input" size="5"/>
 
             <button name="submit" label="submit" onclick="clicked(event)" >Submit</button>
@@ -85,22 +82,23 @@
 
     // Training set
 
-var data = 
+var olddata = 
     [
-    {thickness: 0, uniformity_size: 0, uniformity_shape: 0, adhesion: 0, epithelial:0, nuclei: 0, chromatin: 0, nucleoli:0, normal_nuclieoli: 0, mitosis: 0, benign: "yes" },
-    {thickness: 2, uniformity_size: 4, uniformity_shape: 5, adhesion: 3, epithelial:5, nuclei: 2, chromatin: 1, nucleoli:2, normal_nuclieoli: 3, mitosis:1 , benign: "yes" },
-    {thickness: 6, uniformity_size: 5, uniformity_shape: 2, adhesion: 6, epithelial:2, nuclei: 8, chromatin: 7, nucleoli:6, normal_nuclieoli: 3, mitosis: 10, benigh: "no" },
-    {thickness: 8, uniformity_size: 3, uniformity_shape: 6, adhesion: 7, epithelial:8, nuclei:3, chromatin: 5, nucleoli:6, normal_nuclieoli: 7, mitosis: 5, benign: "no" },
-    {thickness: 3, uniformity_size: 8, uniformity_shape: 8, adhesion: 2, epithelial:5, nuclei:0, chromatin: 1, nucleoli:1, normal_nuclieoli: 2, mitosis: 0, benign: "yes" },
-    {thickness: 9, uniformity_size: 1, uniformity_shape: 5, adhesion: 1, epithelial:2, nuclei:6, chromatin: 8, nucleoli: 7, normal_nuclieoli: 4, mitosis: 3, benign: "no" },
-    {thickness: 5, uniformity_size: 5, uniformity_shape: 8, adhesion: 4, epithelial:7, nuclei:6, chromatin: 5, nucleoli:8, normal_nuclieoli: 4, mitosis: 9,benign: "no" },
-    {thickness: 2, uniformity_size: 2, uniformity_shape: 3, adhesion: 5, epithelial:2, nuclei:0, chromatin: 5, nucleoli:3, normal_nuclieoli: 1, mitosis: 1, benign: "yes" },
+    {thickness: 0, uniformity_size: 0, uniformity_shape: 0, adhesion: 0, epithelial:0, nuclei: 0, chromatin: 0,  normal_nuclieoli: 0, mitosis: 0, class: 2 },
+    {thickness: 2, uniformity_size: 4, uniformity_shape: 5, adhesion: 3, epithelial:5, nuclei: 2, chromatin: 1,  normal_nuclieoli: 3, mitosis:1 , class: 2 },
+    {thickness: 6, uniformity_size: 5, uniformity_shape: 2, adhesion: 6, epithelial:2, nuclei: 8, chromatin: 7,  normal_nuclieoli: 3, mitosis: 10, class: 4},
+    {thickness: 8, uniformity_size: 3, uniformity_shape: 6, adhesion: 7, epithelial:8, nuclei:3, chromatin: 5, normal_nuclieoli: 7, mitosis: 5, class: 2 },
+    {thickness: 3, uniformity_size: 8, uniformity_shape: 8, adhesion: 2, epithelial:5, nuclei:0, chromatin: 1, normal_nuclieoli: 2, mitosis: 0, class: 4 },
+    {thickness: 9, uniformity_size: 1, uniformity_shape: 5, adhesion: 1, epithelial:2, nuclei:6, chromatin: 8, normal_nuclieoli: 4, mitosis: 3, class: 4 },
+    {thickness: 5, uniformity_size: 5, uniformity_shape: 8, adhesion: 4, epithelial:7, nuclei:6, chromatin: 5, normal_nuclieoli: 4, mitosis: 9, class: 2 },
+    {thickness: 2, uniformity_size: 2, uniformity_shape: 3, adhesion: 5, epithelial:2, nuclei:0, chromatin: 5,  normal_nuclieoli: 1, mitosis: 1, class: 2 },
     ];
 
     var dataArr = [];
 
-    d3.csv("data.csv").then(function(data) {
+    d3.csv("data.t.csv").then(function(data) {
         
+        console.log("CSV Data 1: ", data);
 
         for (var i=0; i < data.length ; ++i ) {
             var dataObj = {};
@@ -112,14 +110,14 @@ var data =
             dataObj.epithelial = data[i].epithelial;
             dataObj.nuclei = data[i].nuclei;
             dataObj.chromatin = data[i].chromatin;
-            dataObj.nucleoli = data[i].nucleoli;
             dataObj.normal_nuclieoli = data[i].normal_nuclieoli;
             dataObj.mitosis = data[i].mitosis;
+            dataObj.class = data[i].class;
 
             dataArr.push(dataObj)
         }
 
-        console.log("CSV Data: ", dataArr );
+        console.log("CSV Data 2: ", dataArr);
     });
 
 
@@ -140,7 +138,6 @@ var data =
         var txt6_element = Number(document.getElementById('text6').value);
         var txt7_element = Number(document.getElementById('text7').value);
         var txt8_element = Number(document.getElementById('text8').value);
-        var txt9_element = Number(document.getElementById('text9').value);
         var txt10_element = Number(document.getElementById('text10').value);
      
      
@@ -151,15 +148,14 @@ var data =
         console.log( "Epithelial: " + txt5_element)
         console.log( "Nuclei: " + txt6_element)
         console.log( "Chromatin: " + txt7_element)
-        console.log( "Nuclieoli: " + txt8_element)
-        console.log( "Normal_nuclieoli: " + txt9_element)
+        console.log( "Normal_Nuclieoli: " + txt8_element)
         console.log( "Mitosis: " + txt10_element)
 
 
 // Configuration
 var config = {
     trainingSet: dataArr, 
-    categoryAttr: 'benign'
+    categoryAttr: 'class'
 };
 // Building Decision Tree
 var decisionTree = new dt.DecisionTree(config);
@@ -180,8 +176,7 @@ var diagnosis =  {
                     epithelial:         txt5_element ,
                     nuclei:             txt6_element ,
                     chromatin:          txt7_element ,
-                    nucleoli:           txt8_element ,
-                    normal_nuclieoli:   txt9_element ,
+                    normal_nucleoli:    txt8_element ,
                     mitosis:            txt10_element 
                 };
 
