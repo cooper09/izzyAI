@@ -34,7 +34,8 @@
     <p>Please enter relavent data as labled. US decimal numbers between  1 and 10</p>
     <br/>
     <p>For example: Clump Thickness: 2 , Uniformith of Cell Size: 3, Uniformity of Shape: 0, etc... </p>
-        <br/><br/>
+    <p>Final Result: (2 for benign, 4 for malignant)</p>
+    <br/><br/>
         <form id="myform">
             <label for="thickness">Clump Thickness:</label>
             <input type="text"  id="text1" name="thickness" class="item-input" size="5"/>
@@ -68,10 +69,10 @@
         <br/><br/>
         <div id="testingItem"></div>
         <br/>
-        <b>Decision Tree prediction - Benign:</b>
+        <b>Decision Tree prediction - Class:</b>
         <div id="decisionTreePrediction"></div>
         <br/>
-        <b>Random Forest prediction - Benign:</b>
+        <b>Random Forest prediction - Class:</b>
         <div id="randomForestPrediction"></div>
         <br/>
         <b>Decision Tree:</b>
@@ -81,24 +82,9 @@
 <script>
 
     // Training set
-
-var olddata = 
-    [
-    {thickness: 0, uniformity_size: 0, uniformity_shape: 0, adhesion: 0, epithelial:0, nuclei: 0, chromatin: 0,  normal_nuclieoli: 0, mitosis: 0, class: 2 },
-    {thickness: 2, uniformity_size: 4, uniformity_shape: 5, adhesion: 3, epithelial:5, nuclei: 2, chromatin: 1,  normal_nuclieoli: 3, mitosis:1 , class: 2 },
-    {thickness: 6, uniformity_size: 5, uniformity_shape: 2, adhesion: 6, epithelial:2, nuclei: 8, chromatin: 7,  normal_nuclieoli: 3, mitosis: 10, class: 4},
-    {thickness: 8, uniformity_size: 3, uniformity_shape: 6, adhesion: 7, epithelial:8, nuclei:3, chromatin: 5, normal_nuclieoli: 7, mitosis: 5, class: 2 },
-    {thickness: 3, uniformity_size: 8, uniformity_shape: 8, adhesion: 2, epithelial:5, nuclei:0, chromatin: 1, normal_nuclieoli: 2, mitosis: 0, class: 4 },
-    {thickness: 9, uniformity_size: 1, uniformity_shape: 5, adhesion: 1, epithelial:2, nuclei:6, chromatin: 8, normal_nuclieoli: 4, mitosis: 3, class: 4 },
-    {thickness: 5, uniformity_size: 5, uniformity_shape: 8, adhesion: 4, epithelial:7, nuclei:6, chromatin: 5, normal_nuclieoli: 4, mitosis: 9, class: 2 },
-    {thickness: 2, uniformity_size: 2, uniformity_shape: 3, adhesion: 5, epithelial:2, nuclei:0, chromatin: 5,  normal_nuclieoli: 1, mitosis: 1, class: 2 },
-    ];
-
     var dataArr = [];
 
     d3.csv("data.t.csv").then(function(data) {
-        
-        console.log("CSV Data 1: ", data);
 
         for (var i=0; i < data.length ; ++i ) {
             var dataObj = {};
@@ -117,7 +103,7 @@ var olddata =
             dataArr.push(dataObj)
         }
 
-        console.log("CSV Data 2: ", dataArr);
+        console.log("CSV Data: ", dataArr);
     });
 
 
@@ -126,8 +112,6 @@ var olddata =
     function clicked() {
         console.log("I'm clicked: ",  );
         event.preventDefault();
-
-
 
         var frm_element = document.getElementById('myform').value;
         var txt1_element = Number(document.getElementById('text1').value);
@@ -195,7 +179,9 @@ document.getElementById('displayTree').innerHTML = treeToHtml(decisionTree.root)
 // Recursive (DFS) function for displaying inner structure of decision tree
 function treeToHtml(tree) {
     // only leafs containing category
-    if (tree.category) {
+    console.log( "tree classification: ", tree.category );
+
+    if (tree.category)  {
         return  ['<ul>',
                     '<li>',
                         '<a href="#">',
